@@ -143,7 +143,7 @@ class TransportSensor(SensorEntity):
 
         # parse JSON response
         try:
-            departures = response.json()
+            departures = response.json().get('Departures')
         except requests.exceptions.InvalidJSONError as ex:
             _LOGGER.error(f"API invalid JSON: {ex}")
             return []

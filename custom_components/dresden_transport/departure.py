@@ -1,40 +1,36 @@
 from dataclasses import dataclass
 from datetime import datetime
-
+import re
 from .const import TRANSPORT_TYPE_VISUALS, DEFAULT_ICON
 
 
 @dataclass
 class Departure:
-    trip_id: str
     line_name: str
     line_type: str
     time: datetime
+    platform: str | None = None
     direction: str | None = None
     icon: str | None = None
     bg_color: str | None = None
     fallback_color: str | None = None
-    location: tuple[float, float] | None = None
 
     @classmethod
     def from_dict(cls, source):
-        line_type = source.get("line", {}).get("product")
+        line_type = source.get("Mot")
         line_visuals = TRANSPORT_TYPE_VISUALS.get(line_type) or {}
+        time_str = source.get("RealTime") or source.get("ScheduledTime")
+        res = re.search('\d+', time_str) 
+        time = int(int(res.group()) / 1000)
         return cls(
-            trip_id=source["tripId"],
-            line_name=source.get("line", {}).get("name"),
+            line_name=source.get("LineName"),
             line_type=line_type,
-            time=datetime.fromisoformat(
-                source.get("when") or source.get("plannedWhen")
-            ).strftime("%H:%M"),
-            direction=source.get("direction"),
+            time=datetime.fromtimestamp(time).strftime("%H:%M"),
+            direction=source.get("Direction"),
+            platform=source.get("Platform", {}).get("Name"),
             icon=line_visuals.get("icon") or DEFAULT_ICON,
             bg_color=source.get("line", {}).get("color", {}).get("bg"),
             fallback_color=line_visuals.get("color"),
-            location=[
-                source.get("currentTripPosition", {}).get("latitude") or 0.0,
-                source.get("currentTripPosition", {}).get("longitude") or 0.0,
-            ],
         )
 
     def to_dict(self):
