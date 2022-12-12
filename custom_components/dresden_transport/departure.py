@@ -38,6 +38,7 @@ class Departure:
             "line_name": self.line_name,
             "line_type": self.line_type,
             "time": self.time,
+            "platform": self.platform,
             "direction": self.direction,
             "color": self.fallback_color or self.bg_color,
         }
