@@ -72,7 +72,6 @@ class DresdenTransportTimetableCard extends HTMLElement {
             width: 100%;
             text-align: left;
             padding: 10px 10px 5px 5px;
-            color: rgb(220, 221, 221);
         }      
         .departures {
             width: 100%;
@@ -89,7 +88,6 @@ class DresdenTransportTimetableCard extends HTMLElement {
             flex-wrap: nowrap;
             align-items: center;
             gap: 15px;
-            color: rgb(220, 221, 221);
         }
         .line {
             min-width: 70px;
