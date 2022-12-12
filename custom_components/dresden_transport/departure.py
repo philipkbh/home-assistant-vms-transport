@@ -10,6 +10,7 @@ class Departure:
     line_type: str
     timestamp: int
     time: datetime
+    gap: int
     platform: str | None = None
     direction: str | None = None
     icon: str | None = None
@@ -23,9 +24,11 @@ class Departure:
         time_str = source.get("RealTime") or source.get("ScheduledTime")
         res = re.search('\d+', time_str) 
         time = int(int(res.group()) / 1000)
+        gap = round((datetime.fromtimestamp(time) - datetime.now()).total_seconds() / 60)
         return cls(
             line_name=source.get("LineName"),
             line_type=line_type,
+            gap=gap,
             timestamp=time,
             time=datetime.fromtimestamp(time).strftime("%H:%M"),
             direction=source.get("Direction"),
@@ -40,6 +43,7 @@ class Departure:
             "line_name": self.line_name,
             "line_type": self.line_type,
             "time": self.time,
+            "gap": self.gap,
             "platform": self.platform,
             "direction": self.direction,
             "color": self.fallback_color or self.bg_color,
