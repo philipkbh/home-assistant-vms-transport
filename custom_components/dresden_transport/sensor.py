@@ -68,7 +68,7 @@ async def async_setup_platform(
     """Set up the sensor platform."""
     if CONF_DEPARTURES in config:
         for departure in config[CONF_DEPARTURES]:
-            add_entities([TransportSensor(hass, departure)])
+            add_entities([TransportSensor(hass, departure)], True)
 
 
 class TransportSensor(SensorEntity):
