@@ -1,3 +1,4 @@
+#pylint: disable=duplicate-code
 from datetime import timedelta
 
 DOMAIN = "berlin_transport"

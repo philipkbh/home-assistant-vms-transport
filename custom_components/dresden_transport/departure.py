@@ -1,3 +1,4 @@
+#pylint: disable=duplicate-code
 from dataclasses import dataclass
 from datetime import datetime
 import re
@@ -22,7 +23,7 @@ class Departure:
         line_type = source.get("Mot")
         line_visuals = TRANSPORT_TYPE_VISUALS.get(line_type) or {}
         time_str = source.get("RealTime") or source.get("ScheduledTime")
-        res = re.search('\d+', time_str) 
+        res = re.search(r'\d+', time_str) 
         time = int(int(res.group()) / 1000)
         gap = round((datetime.fromtimestamp(time) - datetime.now()).total_seconds() / 60)
         return cls(

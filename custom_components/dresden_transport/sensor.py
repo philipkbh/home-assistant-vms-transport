@@ -1,3 +1,4 @@
+#pylint: disable=duplicate-code
 """Dresden (VVO) transport integration."""
 from __future__ import annotations
 import logging
