@@ -120,7 +120,7 @@ class TransportSensor(SensorEntity):
                 url=f"{API_ENDPOINT}",
                 params={
                     "time": (
-                        datetime.utcnow() + timedelta(minutes=self.walking_time)
+                        datetime.now() + timedelta(minutes=self.walking_time)
                     ).isoformat(),
                     "format": "json",
                     "limit": API_MAX_RESULTS,
