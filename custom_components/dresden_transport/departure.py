@@ -8,6 +8,7 @@ from .const import TRANSPORT_TYPE_VISUALS, DEFAULT_ICON
 class Departure:
     line_name: str
     line_type: str
+    timestamp: int
     time: datetime
     platform: str | None = None
     direction: str | None = None
@@ -25,6 +26,7 @@ class Departure:
         return cls(
             line_name=source.get("LineName"),
             line_type=line_type,
+            timestamp=time,
             time=datetime.fromtimestamp(time).strftime("%H:%M"),
             direction=source.get("Direction"),
             platform=source.get("Platform", {}).get("Name"),
