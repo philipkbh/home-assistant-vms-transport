@@ -1,7 +1,8 @@
 import {
   LitElement,
   html,
-  css
+  css,
+  nothing
 } from "https://cdn.jsdelivr.net/gh/lit/dist@2/core/lit-core.min.js";
 
 class DresdenTransportCard extends LitElement {
@@ -20,7 +21,10 @@ class DresdenTransportCard extends LitElement {
         return stateObj
           ? html`
             <ha-card><div class="container">
-              <div class="stop">${stateObj.attributes.friendly_name}</div>
+            ${this.config.show_stop_name
+              ? html`<div class="stop">${stateObj.attributes.friendly_name}</div>`
+              : nothing
+            }
               <div class="departures">
                 ${stateObj.attributes.departures.slice(0, maxEntries).map((departure) => 
                   html`
@@ -31,7 +35,10 @@ class DresdenTransportCard extends LitElement {
                       </div>
                       <div class="direction">${departure.direction}</div>
                       <div class="time-slot">
-                          <div class="todeparture">(+${departure.gap})</div>
+                          ${this.config.show_gap
+                            ? html`<div class="todeparture">(+${departure.gap})</div>`
+                            : nothing
+                          } 
                           <div class="time">${departure.time}</div>
                       </div>
                     </div>
