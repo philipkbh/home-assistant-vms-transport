@@ -1,4 +1,4 @@
-name: Black, Pylint, MyPy
+name: Black, Pylint
 on: [push, pull_request]
 
 jobs:
@@ -11,6 +11,6 @@ jobs:
         with:
           python-version: 3.x
       - run: pip install --upgrade pip
-      - run: pip install black pylint mypy
-      - run: black --exclude="custom_components/berlin_transport/const.py" --diff .
+      - run: pip install black pylint
+      - run: black --extend-exclude="const.py" --diff .
       - run: pylint $(git ls-files '*.py')
