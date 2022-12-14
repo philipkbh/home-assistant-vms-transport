@@ -1,10 +1,10 @@
 #pylint: disable=duplicate-code
 from datetime import timedelta
 
-DOMAIN = "berlin_transport"
+DOMAIN = "dresden_transport"
 SCAN_INTERVAL = timedelta(seconds=90)
-API_ENDPOINT = "https://v5.vbb.transport.rest"
-API_MAX_RESULTS = 15
+API_ENDPOINT = "https://webapi.vvo-online.de/dm"
+API_MAX_RESULTS = 10
 
 DEFAULT_ICON = "mdi:clock"
 
@@ -15,8 +15,8 @@ CONF_DEPARTURES_WALKING_TIME = "walking_time"
 CONF_DEPARTURES_DIRECTION = "direction"
 CONF_TYPE_SUBURBAN = "suburban"
 CONF_TYPE_SUBWAY = "subway"
-CONF_TYPE_TRAM = "tram"
-CONF_TYPE_BUS = "bus"
+CONF_TYPE_TRAM = "Tram"
+CONF_TYPE_BUS = "CityBus"
 CONF_TYPE_FERRY = "ferry"
 CONF_TYPE_EXPRESS = "express"
 CONF_TYPE_REGIONAL = "regional"

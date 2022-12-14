@@ -1,5 +1,5 @@
 #pylint: disable=duplicate-code
-"""The Berlin (BVG) and Brandenburg (VBB) transport integration."""
+"""Dresden (VVO) transport integration."""
 from __future__ import annotations
 import logging
 from typing import Optional
@@ -69,7 +69,7 @@ async def async_setup_platform(
     """Set up the sensor platform."""
     if CONF_DEPARTURES in config:
         for departure in config[CONF_DEPARTURES]:
-            add_entities([TransportSensor(hass, departure)])
+            add_entities([TransportSensor(hass, departure)], True)
 
 
 class TransportSensor(SensorEntity):
@@ -118,20 +118,17 @@ class TransportSensor(SensorEntity):
     def fetch_departures(self) -> Optional[list[Departure]]:
         try:
             response = requests.get(
-                url=f"{API_ENDPOINT}/stops/{self.stop_id}/departures",
+                url=f"{API_ENDPOINT}",
                 params={
-                    "when": (
-                        datetime.utcnow() + timedelta(minutes=self.walking_time)
+                    "time": (
+                        datetime.now() + timedelta(minutes=self.walking_time)
                     ).isoformat(),
-                    "direction": self.direction,
-                    "results": API_MAX_RESULTS,
-                    "suburban": self.config.get(CONF_TYPE_SUBURBAN) or False,
-                    "subway": self.config.get(CONF_TYPE_SUBWAY) or False,
-                    "tram": self.config.get(CONF_TYPE_TRAM) or False,
-                    "bus": self.config.get(CONF_TYPE_BUS) or False,
-                    "ferry": self.config.get(CONF_TYPE_FERRY) or False,
-                    "express": self.config.get(CONF_TYPE_EXPRESS) or False,
-                    "regional": self.config.get(CONF_TYPE_REGIONAL) or False,
+                    "format": "json",
+                    "limit": API_MAX_RESULTS,
+                    "stopID": self.stop_id,
+                    "isarrival": False,
+                    "shorttermchanges": True,
+                    "mentzonly": False,
                 },
                 timeout=30,
             )
@@ -147,7 +144,7 @@ class TransportSensor(SensorEntity):
 
         # parse JSON response
         try:
-            departures = response.json()
+            departures = response.json().get('Departures')
         except requests.exceptions.InvalidJSONError as ex:
             _LOGGER.error(f"API invalid JSON: {ex}")
             return []
