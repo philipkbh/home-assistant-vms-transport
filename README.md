@@ -90,14 +90,13 @@ After fetching the API, it creates one entity for each stop and writes 10 upcomi
 
 ## ❤️ Contributions
 
-Contributions are welcome. Feel free to [open a PR](https://github.com/VDenisiuk/home-assistant-berlin-transport/pulls) and send it to review. If you are unsure, [open an Issue](https://github.com/VDenisiuk/home-assistant-berlin-transport/issues) and ask for advice.
+Contributions are welcome. Feel free to [open a PR](https://github.com/VDenisyuk/home-assistant-transport/pulls) and send it to review. If you are unsure, [open an Issue](https://github.com/VDenisyuk/home-assistant-transport/issues) and ask for advice.
 
 ## 🐛 Bug reports and feature requests
 
 Since this is my small hobby project, I cannot guarantee you a 100% support or any help with configuring your dashboards. I hope for your understanding.
 
-- **If you find a bug** - open [an Issue](https://github.com/vas3k/home-assistant-berlin-transport/issues) and describe the exact steps to reproduce it. Attach screenshots, copy all logs and other details to help me find the problem.
-- **If you're missing a certain feature**, describe it in Issues and try to code it yourself. It's not hard. At the very least, you can try to [bribe me with a PayPal donation](https://www.paypal.com/paypalme/vas3kcom) to make the feature just for you :)
+- **If you find a bug** - open [an Issue](https://github.com/VDenisyuk/home-assistant-transport/issues) and describe the exact steps to reproduce it. Attach screenshots, copy all logs and other details to help me find the problem.
 
 ## Credits
 
