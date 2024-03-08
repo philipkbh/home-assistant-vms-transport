@@ -1,5 +1,5 @@
 #pylint: disable=duplicate-code
-"""Dresden (VVO) transport integration."""
+"""VMS transport integration."""
 from __future__ import annotations
 import logging
 from typing import Optional
@@ -16,21 +16,10 @@ from homeassistant.components.sensor import PLATFORM_SCHEMA
 from .const import (  # pylint: disable=unused-import
     DOMAIN,  # noqa
     SCAN_INTERVAL,  # noqa
-    API_ENDPOINT,
-    API_MAX_RESULTS,
-    CONF_DEPARTURES,
-    CONF_DEPARTURES_DIRECTION,
-    CONF_DEPARTURES_STOP_ID,
-    CONF_DEPARTURES_WALKING_TIME,
-    CONF_TYPE_BUS,
-    CONF_TYPE_EXPRESS,
-    CONF_TYPE_FERRY,
-    CONF_TYPE_REGIONAL,
-    CONF_TYPE_SUBURBAN,
-    CONF_TYPE_SUBWAY,
-    CONF_TYPE_TRAM,
-    CONF_DEPARTURES_NAME,
-    DEFAULT_ICON,
+    API_ENDPOINT, API_MAX_RESULTS, CONF_DEPARTURES, CONF_DEPARTURES_DIRECTION,
+    CONF_DEPARTURES_STOP_ID, CONF_DEPARTURES_WALKING_TIME, CONF_TYPE_BUS,
+    CONF_TYPE_EXPRESS, CONF_TYPE_FERRY, CONF_TYPE_REGIONAL, CONF_TYPE_SUBURBAN,
+    CONF_TYPE_SUBWAY, CONF_TYPE_TRAM, CONF_DEPARTURES_NAME, DEFAULT_ICON,
 )
 from .departure import Departure
 
@@ -46,19 +35,20 @@ TRANSPORT_TYPES_SCHEMA = {
     vol.Optional(CONF_TYPE_REGIONAL, default=True): bool,
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_DEPARTURES): [
-            {
-                vol.Required(CONF_DEPARTURES_NAME): str,
-                vol.Required(CONF_DEPARTURES_STOP_ID): int,
-                vol.Optional(CONF_DEPARTURES_DIRECTION): str,
-                vol.Optional(CONF_DEPARTURES_WALKING_TIME, default=1): int,
-                **TRANSPORT_TYPES_SCHEMA,
-            }
-        ]
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_DEPARTURES): [{
+        vol.Required(CONF_DEPARTURES_NAME):
+        str,
+        vol.Required(CONF_DEPARTURES_STOP_ID):
+        int,
+        vol.Optional(CONF_DEPARTURES_DIRECTION):
+        str,
+        vol.Optional(CONF_DEPARTURES_WALKING_TIME, default=1):
+        int,
+        **TRANSPORT_TYPES_SCHEMA,
+    }]
+})
+
 
 async def async_setup_platform(
     hass: HomeAssistant,
@@ -109,7 +99,8 @@ class TransportSensor(SensorEntity):
     @property
     def extra_state_attributes(self):
         return {
-            "departures": [departure.to_dict() for departure in self.departures or []]
+            "departures":
+            [departure.to_dict() for departure in self.departures or []]
         }
 
     def update(self):
@@ -120,15 +111,20 @@ class TransportSensor(SensorEntity):
             response = requests.get(
                 url=f"{API_ENDPOINT}",
                 params={
-                    "time": (
-                        datetime.now() + timedelta(minutes=self.walking_time)
-                    ).isoformat(),
-                    "format": "json",
-                    "limit": API_MAX_RESULTS,
-                    "stopID": self.stop_id,
-                    "isarrival": False,
-                    "shorttermchanges": True,
-                    "mentzonly": False,
+                    "time": (datetime.now() +
+                             timedelta(minutes=self.walking_time)).isoformat(),
+                    "format":
+                    "json",
+                    "limit":
+                    API_MAX_RESULTS,
+                    "stopID":
+                    self.stop_id,
+                    "isarrival":
+                    False,
+                    "shorttermchanges":
+                    True,
+                    "mentzonly":
+                    False,
                 },
                 timeout=30,
             )
