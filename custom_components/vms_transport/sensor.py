@@ -1,58 +1,58 @@
 # pylint: disable=duplicate-code
-"""VMS transport integration."""
+"""Verkehrsbund Mittelsachsen (VMS) transport integration."""
 from __future__ import annotations
+
 import json
 import logging
-from typing import Optional
 from datetime import datetime, timedelta
+from typing import Optional
 
+import homeassistant.helpers.config_validation as cv
 import requests
 import voluptuous as vol
-
+from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
-from homeassistant.components.sensor import SensorEntity
-from homeassistant.components.sensor import PLATFORM_SCHEMA
+
+from .const import API_ENDPOINT  # pylint: disable=unused-import
+from .const import DOMAIN  # pylint: disable=unused-import
+from .const import SCAN_INTERVAL  # pylint: disable=unused-import
 from .const import (
-    API_ENDPOINT,
     API_MAX_RESULTS,
     CONF_DEPARTURES,
-    CONF_DEPARTURES_DIRECTION,
+    CONF_DEPARTURES_NAME,
     CONF_DEPARTURES_STOP_ID,
     CONF_DEPARTURES_WALKING_TIME,
     CONF_TYPE_BUS,
-    CONF_TYPE_EXPRESS,
-    CONF_TYPE_FERRY,
-    CONF_TYPE_REGIONAL,
+    CONF_TYPE_INTERCITY_BUS,
+    CONF_TYPE_REGIO_BUS,
     CONF_TYPE_SUBURBAN,
-    CONF_TYPE_SUBWAY,
+    CONF_TYPE_TRAIN,
     CONF_TYPE_TRAM,
-    CONF_DEPARTURES_NAME,
     DEFAULT_ICON,
+    TRANSPORT_TYPES,
 )
 from .departure import Departure
 
 _LOGGER = logging.getLogger(__name__)
 
 TRANSPORT_TYPES_SCHEMA = {
-    vol.Optional(CONF_TYPE_SUBURBAN, default=True): bool,
-    vol.Optional(CONF_TYPE_SUBWAY, default=True): bool,
-    vol.Optional(CONF_TYPE_TRAM, default=True): bool,
-    vol.Optional(CONF_TYPE_BUS, default=True): bool,
-    vol.Optional(CONF_TYPE_FERRY, default=True): bool,
-    vol.Optional(CONF_TYPE_EXPRESS, default=True): bool,
-    vol.Optional(CONF_TYPE_REGIONAL, default=True): bool,
+    vol.Optional(CONF_TYPE_BUS, default=True): cv.boolean,
+    vol.Optional(CONF_TYPE_INTERCITY_BUS, default=True): cv.boolean,
+    vol.Optional(CONF_TYPE_REGIO_BUS, default=True): cv.boolean,
+    vol.Optional(CONF_TYPE_SUBURBAN, default=True): cv.boolean,
+    vol.Optional(CONF_TYPE_TRAIN, default=True): cv.boolean,
+    vol.Optional(CONF_TYPE_TRAM, default=True): cv.boolean,
 }
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Optional(CONF_DEPARTURES): [
             {
-                vol.Required(CONF_DEPARTURES_NAME): str,
-                vol.Required(CONF_DEPARTURES_STOP_ID): int,
-                vol.Optional(CONF_DEPARTURES_DIRECTION): str,
-                vol.Optional(CONF_DEPARTURES_WALKING_TIME, default=1): int,
+                vol.Required(CONF_DEPARTURES_STOP_ID): cv.positive_int,
+                vol.Required(CONF_DEPARTURES_NAME): cv.string,
+                vol.Optional(CONF_DEPARTURES_WALKING_TIME, default=1): cv.positive_int,
                 **TRANSPORT_TYPES_SCHEMA,
             }
         ]
@@ -80,7 +80,6 @@ class TransportSensor(SensorEntity):
         self.config: dict = config
         self.stop_id: int = config[CONF_DEPARTURES_STOP_ID]
         self.sensor_name: str | None = config.get(CONF_DEPARTURES_NAME)
-        self.direction: str | None = config.get(CONF_DEPARTURES_DIRECTION)
         self.walking_time: int = config.get(CONF_DEPARTURES_WALKING_TIME) or 1
         # we add +1 minute anyway to delete the "just gone" transport
 
@@ -116,15 +115,15 @@ class TransportSensor(SensorEntity):
     def fetch_departures(self) -> Optional[list[Departure]]:
         try:
             response = requests.get(
-                url=f"{API_ENDPOINT}",
+                url=f"{API_ENDPOINT}/dm",
                 params={
-                    "time": (datetime.now() + timedelta(minutes=self.walking_time)).isoformat(),
-                    "format": "json",
-                    "limit": API_MAX_RESULTS,
                     "stopID": self.stop_id,
+                    "time": (datetime.utcnow() + timedelta(minutes=self.walking_time)).isoformat(),
                     "isarrival": False,
                     "shorttermchanges": True,
-                    "mentzonly": False,
+                    "mot": [type for type in TRANSPORT_TYPES if self.config.get(type)],
+                    "format": "json",
+                    "limit": API_MAX_RESULTS,
                 },  # type: ignore[arg-type]
                 timeout=30,
             )

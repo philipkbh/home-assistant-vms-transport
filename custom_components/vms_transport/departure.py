@@ -1,12 +1,16 @@
-#pylint: disable=duplicate-code
+# pylint: disable=duplicate-code
+import re
 from dataclasses import dataclass
 from datetime import datetime
-import re
-from .const import TRANSPORT_TYPE_VISUALS, DEFAULT_ICON
+
+from .const import DEFAULT_ICON, TRANSPORT_TYPE_VISUALS
 
 
 @dataclass
 class Departure:
+    """Departure dataclass to store data from API:
+    https://github.com/kiliankoe/vvo/blob/main/documentation/webapi.md#departure-monitor"""
+
     line_name: str
     line_type: str
     timestamp: int
@@ -23,7 +27,7 @@ class Departure:
         line_type = source.get("Mot")
         line_visuals = TRANSPORT_TYPE_VISUALS.get(line_type) or {}
         time_str = source.get("RealTime") or source.get("ScheduledTime")
-        res = re.search(r'\d+', time_str) 
+        res = re.search(r"\d+", time_str)
         time = int(int(res.group()) / 1000)
         gap = round((datetime.fromtimestamp(time) - datetime.now()).total_seconds() / 60)
         return cls(
@@ -35,8 +39,7 @@ class Departure:
             direction=source.get("Direction"),
             platform=source.get("Platform", {}).get("Name"),
             icon=line_visuals.get("icon") or DEFAULT_ICON,
-            bg_color=source.get("line", {}).get("color", {}).get("bg"),
-            fallback_color=line_visuals.get("color"),
+            bg_color=line_visuals.get("color"),
         )
 
     def to_dict(self):
@@ -47,5 +50,5 @@ class Departure:
             "gap": self.gap,
             "platform": self.platform,
             "direction": self.direction,
-            "color": self.fallback_color or self.bg_color,
+            "color": self.bg_color,
         }
