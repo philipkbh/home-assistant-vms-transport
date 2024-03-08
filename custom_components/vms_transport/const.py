@@ -1,7 +1,7 @@
 #pylint: disable=duplicate-code
 from datetime import timedelta
 
-DOMAIN = "dresden_transport"
+DOMAIN = "vms_transport"
 SCAN_INTERVAL = timedelta(seconds=90)
 API_ENDPOINT = "https://webapi.vvo-online.de/dm"
 API_MAX_RESULTS = 10

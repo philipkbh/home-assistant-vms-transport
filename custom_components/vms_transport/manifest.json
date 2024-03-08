@@ -1,0 +1,14 @@
+{
+  "domain": "vms_transport",
+  "name": "VMS transport",
+  "config_flow": true,
+  "documentation": "https://github.com/philipkbh/home-assistant-vms-transport",
+  "requirements": [],
+  "ssdp": [],
+  "zeroconf": [],
+  "homekit": {},
+  "dependencies": [],
+  "codeowners": ["@vas3k", "@VDenisiuk", "@philipkbh"],
+  "iot_class": "cloud_polling",
+  "version": "0.1.0"
+}
