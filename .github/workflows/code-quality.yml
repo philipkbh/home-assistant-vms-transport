@@ -1,4 +1,4 @@
-name: Black, Pylint
+name: Black, Pylint, MyPy
 on: [push, pull_request]
 
 jobs:
@@ -6,11 +6,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Checks
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.x
       - run: pip install --upgrade pip
-      - run: pip install black pylint
-      - run: black --extend-exclude="const.py" --diff .
-      - run: pylint $(git ls-files '*.py')
+      - run: pip install black pylint mypy
+      - run: black --exclude="custom_components/vms_transport/const.py" --diff .
+      - run: pylint --rcfile=.pylintrc $(git ls-files '*.py')
+      - run: mypy --install-types --non-interactive $(git ls-files '*.py')

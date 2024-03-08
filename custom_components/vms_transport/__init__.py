@@ -1,10 +1,11 @@
 """VMS transport integration."""
+
 from __future__ import annotations
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType
 
-from .const import DOMAIN, SCAN_INTERVAL  # noqa
+from .const import DOMAIN, SCAN_INTERVAL
 
 
 def setup(hass: HomeAssistant, config: ConfigType) -> bool:  # pylint: disable=unused-argument

@@ -1,6 +1,7 @@
-#pylint: disable=duplicate-code
+# pylint: disable=duplicate-code
 """VMS transport integration."""
 from __future__ import annotations
+import json
 import logging
 from typing import Optional
 from datetime import datetime, timedelta
@@ -13,13 +14,22 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from .const import (  # pylint: disable=unused-import
-    DOMAIN,  # noqa
-    SCAN_INTERVAL,  # noqa
-    API_ENDPOINT, API_MAX_RESULTS, CONF_DEPARTURES, CONF_DEPARTURES_DIRECTION,
-    CONF_DEPARTURES_STOP_ID, CONF_DEPARTURES_WALKING_TIME, CONF_TYPE_BUS,
-    CONF_TYPE_EXPRESS, CONF_TYPE_FERRY, CONF_TYPE_REGIONAL, CONF_TYPE_SUBURBAN,
-    CONF_TYPE_SUBWAY, CONF_TYPE_TRAM, CONF_DEPARTURES_NAME, DEFAULT_ICON,
+from .const import (
+    API_ENDPOINT,
+    API_MAX_RESULTS,
+    CONF_DEPARTURES,
+    CONF_DEPARTURES_DIRECTION,
+    CONF_DEPARTURES_STOP_ID,
+    CONF_DEPARTURES_WALKING_TIME,
+    CONF_TYPE_BUS,
+    CONF_TYPE_EXPRESS,
+    CONF_TYPE_FERRY,
+    CONF_TYPE_REGIONAL,
+    CONF_TYPE_SUBURBAN,
+    CONF_TYPE_SUBWAY,
+    CONF_TYPE_TRAM,
+    CONF_DEPARTURES_NAME,
+    DEFAULT_ICON,
 )
 from .departure import Departure
 
@@ -35,19 +45,19 @@ TRANSPORT_TYPES_SCHEMA = {
     vol.Optional(CONF_TYPE_REGIONAL, default=True): bool,
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
-    vol.Optional(CONF_DEPARTURES): [{
-        vol.Required(CONF_DEPARTURES_NAME):
-        str,
-        vol.Required(CONF_DEPARTURES_STOP_ID):
-        int,
-        vol.Optional(CONF_DEPARTURES_DIRECTION):
-        str,
-        vol.Optional(CONF_DEPARTURES_WALKING_TIME, default=1):
-        int,
-        **TRANSPORT_TYPES_SCHEMA,
-    }]
-})
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
+    {
+        vol.Optional(CONF_DEPARTURES): [
+            {
+                vol.Required(CONF_DEPARTURES_NAME): str,
+                vol.Required(CONF_DEPARTURES_STOP_ID): int,
+                vol.Optional(CONF_DEPARTURES_DIRECTION): str,
+                vol.Optional(CONF_DEPARTURES_WALKING_TIME, default=1): int,
+                **TRANSPORT_TYPES_SCHEMA,
+            }
+        ]
+    }
+)
 
 
 async def async_setup_platform(
@@ -98,10 +108,7 @@ class TransportSensor(SensorEntity):
 
     @property
     def extra_state_attributes(self):
-        return {
-            "departures":
-            [departure.to_dict() for departure in self.departures or []]
-        }
+        return {"departures": [departure.to_dict() for departure in self.departures or []]}
 
     def update(self):
         self.departures = self.fetch_departures()
@@ -111,20 +118,13 @@ class TransportSensor(SensorEntity):
             response = requests.get(
                 url=f"{API_ENDPOINT}",
                 params={
-                    "time": (datetime.now() +
-                             timedelta(minutes=self.walking_time)).isoformat(),
-                    "format":
-                    "json",
-                    "limit":
-                    API_MAX_RESULTS,
-                    "stopID":
-                    self.stop_id,
-                    "isarrival":
-                    False,
-                    "shorttermchanges":
-                    True,
-                    "mentzonly":
-                    False,
+                    "time": (datetime.now() + timedelta(minutes=self.walking_time)).isoformat(),
+                    "format": "json",
+                    "limit": API_MAX_RESULTS,
+                    "stopID": self.stop_id,
+                    "isarrival": False,
+                    "shorttermchanges": True,
+                    "mentzonly": False,
                 },
                 timeout=30,
             )
@@ -140,8 +140,8 @@ class TransportSensor(SensorEntity):
 
         # parse JSON response
         try:
-            departures = response.json().get('Departures')
-        except requests.exceptions.InvalidJSONError as ex:
+            departures = json.loads(response.text).get("Departures")
+        except json.JSONDecodeError as ex:
             _LOGGER.error(f"API invalid JSON: {ex}")
             return []
 
