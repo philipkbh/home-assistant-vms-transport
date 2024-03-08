@@ -125,7 +125,7 @@ class TransportSensor(SensorEntity):
                     "isarrival": False,
                     "shorttermchanges": True,
                     "mentzonly": False,
-                },
+                },  # type: ignore[arg-type]
                 timeout=30,
             )
             response.raise_for_status()
