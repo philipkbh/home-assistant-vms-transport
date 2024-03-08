@@ -2,8 +2,6 @@
 
 Custom sensor component and lovelace card that displays upcoming departures from your defined public transport stops for Chemnitz (CVAG) and Verkehrsverbund Mittelsachsen (VMS).
 
-![](./docs/screenshots/timetable-card.png)
-
 ## 💿 Installation
 
 The component consists of two parts:
