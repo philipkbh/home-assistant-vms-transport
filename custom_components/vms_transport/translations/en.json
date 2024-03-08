@@ -1,0 +1,34 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Search Stop",
+        "description": "Enter the Name of the Stop to find the Stop ID",
+        "data": {
+          "search": "Name of the Stop"
+        }
+      },
+      "stop": {
+        "title": "Select Stop",
+        "description": "Select the desired Stop",
+        "data": {
+          "name": "Name of the Stop",
+          "stop_id": "ID of the Stop"
+        }
+      },
+      "details": {
+        "title": "Further Details",
+        "description": "Add further details",
+        "data": {
+          "walking_time": "Walking time in minutes",
+          "CityBus": "Include Bus",
+          "IntercityBus": "Include Intercity-Bus",
+          "PlusBus": "Include Regio-Bus",
+          "SuburbanRailway": "Include S-Bahn",
+          "Train": "Include Train",
+          "Tram": "Include Tram"
+        }
+      }
+    }
+  }
+}

@@ -1,14 +1,16 @@
 {
   "domain": "vms_transport",
-  "name": "VMS transport",
+  "name": "Verkehrsbund Mittelsachsen (VMS) transport",
+  "codeowners": ["@vas3k", "@VDenisiuk", "@philipkbh"],
   "config_flow": true,
+  "dependencies": [],
   "documentation": "https://github.com/philipkbh/home-assistant-vms-transport",
+  "homekit": {},
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/philipkbh/home-assistant-vms-transport/issues",
   "requirements": [],
   "ssdp": [],
-  "zeroconf": [],
-  "homekit": {},
-  "dependencies": [],
-  "codeowners": ["@vas3k", "@VDenisiuk", "@philipkbh"],
-  "iot_class": "cloud_polling",
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "zeroconf": []
 }
