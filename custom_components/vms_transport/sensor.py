@@ -11,6 +11,7 @@ import homeassistant.helpers.config_validation as cv
 import requests
 import voluptuous as vol
 from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
@@ -70,6 +71,14 @@ async def async_setup_platform(
     if CONF_DEPARTURES in config:
         for departure in config[CONF_DEPARTURES]:
             add_entities([TransportSensor(hass, departure)], True)
+
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    async_add_entities([TransportSensor(hass, config_entry.data)])
 
 
 class TransportSensor(SensorEntity):
