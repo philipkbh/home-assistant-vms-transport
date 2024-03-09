@@ -130,7 +130,6 @@ class TransportSensor(SensorEntity):
                     "time": (datetime.utcnow() + timedelta(minutes=self.walking_time)).isoformat(),
                     "isarrival": False,
                     "shorttermchanges": True,
-                    "stopsOnly": True,
                     "mot": [type for type in TRANSPORT_TYPES if self.config.get(type)],
                     "format": "json",
                     "limit": API_MAX_RESULTS,

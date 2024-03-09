@@ -50,6 +50,7 @@ def get_stop_id(name) -> Optional[list[dict[str, Any]]]:
             url=f"{API_ENDPOINT}/tr/pointfinder",
             params={
                 "query": name,
+                "stopsOnly": True,
                 "format": "json",
                 "limit": API_MAX_RESULTS,
             },
@@ -73,10 +74,7 @@ def get_stop_id(name) -> Optional[list[dict[str, Any]]]:
         return []
 
     # convert api data into objects
-    return [
-        {CONF_DEPARTURES_NAME: f"{stop_name} ({city_name})", CONF_DEPARTURES_STOP_ID: stop_id}
-        for stop_id, _, city_name, stop_name, _, _, _, _, _ in (stop.split("|") for stop in stops)
-    ]
+    return [{CONF_DEPARTURES_NAME: f"{stop_name} ({city_name})", CONF_DEPARTURES_STOP_ID: stop_id} for stop_id, _, city_name, stop_name, _, _, _, _, _ in (stop.split("|") for stop in stops)]
 
 
 def list_stops(stops) -> Optional[vol.Schema]:
@@ -85,10 +83,7 @@ def list_stops(stops) -> Optional[vol.Schema]:
         {
             vol.Required(CONF_SELECTED_STOP, default=False): selector.SelectSelector(
                 selector.SelectSelectorConfig(
-                    options=[
-                        f"{stop[CONF_DEPARTURES_NAME]} [{stop[CONF_DEPARTURES_STOP_ID]}]"
-                        for stop in stops
-                    ],
+                    options=[f"{stop[CONF_DEPARTURES_NAME]} [{stop[CONF_DEPARTURES_STOP_ID]}]" for stop in stops],
                     mode=selector.SelectSelectorMode.DROPDOWN,
                 )
             )
@@ -115,13 +110,9 @@ class TransportConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 data_schema=NAME_SCHEMA,
                 errors={},
             )
-        self.data[CONF_FOUND_STOPS] = await self.hass.async_add_executor_job(
-            get_stop_id, user_input[CONF_SEARCH]
-        )
+        self.data[CONF_FOUND_STOPS] = await self.hass.async_add_executor_job(get_stop_id, user_input[CONF_SEARCH])
 
-        _LOGGER.debug(
-            f"OK: found stops for {user_input[CONF_SEARCH]}: {self.data[CONF_FOUND_STOPS]}"
-        )
+        _LOGGER.debug(f"OK: found stops for {user_input[CONF_SEARCH]}: {self.data[CONF_FOUND_STOPS]}")
 
         return await self.async_step_stop()
 
@@ -134,12 +125,7 @@ class TransportConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 errors={},
             )
 
-        selected_stop = next(
-            (stop[CONF_DEPARTURES_NAME], stop[CONF_DEPARTURES_STOP_ID])
-            for stop in self.data[CONF_FOUND_STOPS]
-            if user_input[CONF_SELECTED_STOP]
-            == f"{stop[CONF_DEPARTURES_NAME]} [{stop[CONF_DEPARTURES_STOP_ID]}]"
-        )
+        selected_stop = next((stop[CONF_DEPARTURES_NAME], stop[CONF_DEPARTURES_STOP_ID]) for stop in self.data[CONF_FOUND_STOPS] if user_input[CONF_SELECTED_STOP] == f"{stop[CONF_DEPARTURES_NAME]} [{stop[CONF_DEPARTURES_STOP_ID]}]")
         (
             self.data[CONF_DEPARTURES_NAME],
             self.data[CONF_DEPARTURES_STOP_ID],
