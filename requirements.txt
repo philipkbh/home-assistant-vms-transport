@@ -1,3 +1,7 @@
 types-requests
+black
+pylint
+mypy
+isort
 
 homeassistant==2023.7.3
