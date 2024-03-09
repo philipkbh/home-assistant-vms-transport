@@ -18,7 +18,7 @@ The component consists of two parts:
 
 **1.** Add this [repository](https://github.com/philipkbh/home-assistant-vms-transport) as a custom repository in HACS in the category **integration**.
 
-**2.** Add `Verkehrsverbund Mittelsachsen (VMS) transport` as a new integration under `Settings` -> `Devices & services`  .
+**2.** Add `Verkehrsverbund Mittelsachsen (VMS) transport` as a new integration under `Settings -> Devices & services`.
 
 **3.** Search for your stop (it will provide up to 15 stops that match your query).
 
