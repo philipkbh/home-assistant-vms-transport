@@ -57,7 +57,7 @@ In this case it's `36030131`.
 
 **1.** Copy the whole [vms_transport](./custom_components/) directory to the `custom_components` folder of your Home Assistant installation. If you can't find the `custom_components` directory at the same level with your `configuration.yml` — simply create it yourself and put `vms_transport` there.
 
-**2.** Go to Home Assistant web interface -> `Developer Tools` -> `Check configuration` -> `Restart` and click on the `Restart Home Assistant` button. It will reload all components in the system.
+**2.** Go to Home Assistant web interface then `Developer Tools -> Check configuration -> Restart` and click on the `Restart Home Assistant` button. It will reload all components in the system.
 
 **3.** Now you can add your new custom sensor to the corresponding section in the `configuration.yml` file.
 
@@ -77,7 +77,7 @@ sensor:
         # Tram = false                      # Optional parameter to hide Tram if `false` (default is true -> shown)
 ```
 
-**4.** Restart Home Assistant core again and you should now see two new entities (however, it may take some time for them to fetch new data). If you don't see anything new — check the **logs** (`Settings` -> `System` -> `Logs`). Some error should pop up there.
+**4.** Restart Home Assistant core again and you should now see two new entities (however, it may take some time for them to fetch new data). If you don't see anything new — check the **logs** (`Settings -> System -> Logs`). Some error should pop up there.
 
 ### Add the lovelace card
 
